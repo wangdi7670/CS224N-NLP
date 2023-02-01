@@ -18,7 +18,7 @@ def sigmoid(x):
     """
 
     ### YOUR CODE HERE (~1 Line)
-
+    s = 1 / (1 + np.exp(-x))
     ### END YOUR CODE
 
     return s
@@ -52,8 +52,8 @@ def naiveSoftmaxLossAndGradient(
     Return:
     loss -- naive softmax loss
     gradCenterVec -- the gradient with respect to the center word vector
-                     in shape (word vector length, )
-                     (dJ / dv_c in the pdf handout)
+                     in shape dJ / dv_(word vector length, )
+                     (c in the pdf handout)
     gradOutsideVecs -- the gradient with respect to all the outside word vectors
                     in shape (num words in vocab, word vector length) 
                     (dJ / dU)
@@ -65,6 +65,17 @@ def naiveSoftmaxLossAndGradient(
     ### This numerically stable implementation helps you avoid issues pertaining
     ### to integer overflow. 
 
+    v_c = np.reshape(centerWordVec, (-1, 1))
+    y_jian = softmax((outsideVectors @ v_c).reshape(-1))
+    loss = -np.log(y_jian[outsideWordIdx])
+
+    y_jian[outsideWordIdx] -= 1
+    y_jian = y_jian.reshape(-1, 1)
+    gradCenterVec = outsideVectors.T @ (y_jian)
+    gradCenterVec =gradCenterVec.reshape(-1)
+    
+    v_c = v_c.reshape(1, -1)
+    gradOutsideVecs = y_jian @ v_c
     ### END YOUR CODE
 
     return loss, gradCenterVec, gradOutsideVecs
