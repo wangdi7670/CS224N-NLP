@@ -123,6 +123,17 @@ def negSamplingLossAndGradient(
 
     ### Please use your implementation of sigmoid in here.
 
+    temp1 = sigmoid(np.dot(outsideVectors[outsideWordIdx], centerWordVec))
+    temp2 = sigmoid(-np.dot(outsideVectors[negSampleWordIndices], centerWordVec))
+    loss = -np.log(temp1) - np.sum(np.log(temp2))
+
+
+    gradCenterVec = (temp1 - 1) * outsideVectors[outsideWordIdx] + ((1 - temp2).reshape(1, -1) @ outsideVectors[negSampleWordIndices]).reshape(-1)
+
+    gradOutsideVecs = np.zeros_like(outsideVectors)
+    gradOutsideVecs[outsideWordIdx] = (temp1 - 1) * centerWordVec
+    for i, item in enumerate(negSampleWordIndices):
+        gradOutsideVecs[item] += (1 - temp2[i]) * centerWordVec
     ### END YOUR CODE
 
     return loss, gradCenterVec, gradOutsideVecs
