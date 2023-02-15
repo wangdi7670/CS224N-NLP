@@ -3,3 +3,5 @@ a1/.ipynb_checkpoints/
 a1/demo*.ipynb
 a2/utils/__pycache__
 .vscode
+/a2/__pycache__
+/a2/utils/datasets/__MACOSX
