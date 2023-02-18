@@ -73,7 +73,13 @@ class ParserModel(nn.Module):
         ### 
         ### See the PDF for hints.
 
+        self.embed_to_hidden_weight = nn.Parameter(nn.init.xavier_normal_(torch.empty(self.embed_size*n_features, hidden_size)))
+        self.emembed_to_hidden_bias = nn.Parameter(nn.init.uniform_(torch.empty(hidden_size)))
+        
+        self.dropout = nn.Dropout(p=dropout_prob)
 
+        self.hidden_to_logits_weight = nn.Parameter(nn.init.xavier_normal_(torch.empty(hidden_size, n_features)))
+        self.hidden_to_logits_bias = nn.Parameter(nn.init.uniform_(torch.empty(n_classes)))
 
 
         ### END YOUR CODE
@@ -107,8 +113,8 @@ class ParserModel(nn.Module):
         ###     View: https://pytorch.org/docs/stable/tensors.html#torch.Tensor.view
         ###     Flatten: https://pytorch.org/docs/stable/generated/torch.flatten.html
 
-
-
+        temp = torch.index_select(self.embeddings, 0, torch.flatten(w))
+        x = temp.reshape(w.shape[0], -1)
         ### END YOUR CODE
         return x
 
